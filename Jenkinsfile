@@ -1,50 +1,41 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('aws_access_key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_key')
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
-                git url: 'https://github.com/sagarmalasiii/Jenkins_ec2_deploy.git', branch: 'main'
+                git url: 'https://github.com/sagarmalasiii/Jenkins_ec2_deploy', branch: 'main'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'aws_access_key', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'aws_secret_key', variable: 'AWS_SECRET_ACCESS_KEY')
-                ]) {
-                    sh 'terraform init'
-                }
+                sh 'terraform init'
             }
         }
+
         stage('Terraform Plan') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'aws_access_key', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'aws_secret_key', variable: 'AWS_SECRET_ACCESS_KEY')
-                ]) {
-                    sh 'terraform plan'
-                }
+                sh 'terraform plan'
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'aws_access_key', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'aws_secret_key', variable: 'AWS_SECRET_ACCESS_KEY')
-                ]) {
-                    input message: "Approve EC2 deployment?"
-                    sh 'terraform apply -auto-approve'
-                }
+                input message: "Apply changes?"
+                sh 'terraform apply -auto-approve'
             }
         }
     }
 
     post {
         success {
-            echo '✅ EC2 deployed successfully!'
+            echo '✅ ASG deployment successful!'
         }
         failure {
             echo '❌ Deployment failed.'
