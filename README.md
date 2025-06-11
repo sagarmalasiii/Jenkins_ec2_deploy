@@ -14,9 +14,6 @@ Step 2: Store AWS Credentials in Jenkins
    - aws_secret_key (Secret Text)
 Step 3: Create Terraform Files
 1. `main.tf`: Defines the provider, security group, launch template, and ASG
-2. `variables.tf`: Declares variables for AWS credentials
-3. `user_data.sh`: Script to install NGINX and set up a default web page
-4. `outputs.tf`: (Optional) Outputs for IP or ASG information
 Step 4: Configure the Jenkinsfile
 Write a pipeline that:
 - Checks out the Git repo
