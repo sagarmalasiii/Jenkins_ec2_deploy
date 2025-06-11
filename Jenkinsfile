@@ -18,6 +18,20 @@ pipeline {
                 }
             }
         }
+        stage('Debug env vars') {
+    steps {
+        withCredentials([
+            string(credentialsId: 'aws_access_key', variable: 'AWS_ACCESS_KEY_ID'),
+            string(credentialsId: 'aws_secret_key', variable: 'AWS_SECRET_ACCESS_KEY')
+        ]) {
+            sh '''
+            echo "AWS_ACCESS_KEY_ID length: ${#AWS_ACCESS_KEY_ID}"
+            echo "AWS_SECRET_ACCESS_KEY length: ${#AWS_SECRET_ACCESS_KEY}"
+            '''
+        }
+    }
+}
+
 
         stage('Terraform Plan') {
             steps {
